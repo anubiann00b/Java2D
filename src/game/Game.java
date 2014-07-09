@@ -16,6 +16,7 @@ public class Game extends JFrame implements MouseListener, KeyListener, Runnable
     public static final int SCREEN_HEIGHT = 480;
     public static final BufferedImage offscreen = new BufferedImage(SCREEN_WIDTH ,SCREEN_HEIGHT, BufferedImage.TYPE_INT_RGB);
     
+    boolean keyPressed;
     int x;
     int y;
     
@@ -43,7 +44,7 @@ public class Game extends JFrame implements MouseListener, KeyListener, Runnable
     @Override
     public void run() {
         while(true) {
-            update();
+            //update();
             try {
                 Thread.sleep(1000/60);
             } catch (InterruptedException e) {
@@ -53,36 +54,39 @@ public class Game extends JFrame implements MouseListener, KeyListener, Runnable
     }
     
     public void update() {
-        x++;
-        y++;
+        if (keyPressed) {
+            x++;
+            y++;
+        }
     }
     
     @Override
     public void paint(Graphics g) {
+        update();
         Graphics s = offscreen.getGraphics();
         
         s.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         
         s.setColor(Color.red);
-        s.fillRect(x, y, 32, 32);
+        s.fillRect(x/10, y/10, 32, 32);
         
         g.drawImage(offscreen, 0, 0, this);
         
         repaint();
     }
     
-    
-    @Override
-    public void keyTyped(KeyEvent e) {
-        System.out.println("T: " + e.getKeyChar());
-    }
-
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("P: " + e.getKeyCode());
+        if (e.getKeyCode() == KeyEvent.VK_SPACE)
+            keyPressed = true;
     }
 
-    @Override public void keyReleased(KeyEvent e) { }
+    @Override public void keyReleased(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE)
+            keyPressed = false;
+    }
+    
+    @Override public void keyTyped(KeyEvent e) { }
     
     @Override public void mouseClicked(MouseEvent e) { }
     @Override public void mousePressed(MouseEvent e) { }
